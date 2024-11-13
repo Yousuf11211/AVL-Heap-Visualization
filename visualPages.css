@@ -1,0 +1,138 @@
+/* Reset body margins and padding for consistency across browsers */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f9; /* Light muted grey for subtle background */
+    color: #2c3e50; /* Dark grey-blue for text, easy on the eyes */
+}
+
+/* Container styling */
+div.container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header styling */
+div.header {
+    background-color: #34495e; /* Premium muted navy */
+    color: #ecf0f1; /* Light grey for text */
+    padding: 30px 0;
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+/* Menu styling */
+div.menu {
+    padding: 20px;
+    background-color: #f39c12; /* Warm amber for menu */
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+div.menu div {
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f8c471; /* Muted light amber for inner menu */
+    border-left: 5px solid #e67e22; /* Accent burnt orange */
+    border-radius: 5px;
+}
+
+/* Content area styling */
+div.content {
+    margin: 30px;
+    padding: 25px;
+    background-color: #ffffff; /* White background for content */
+    border-left: 5px solid #3498db; /* Soft muted blue accent */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Soft shadow for depth */
+    border-radius: 5px;
+}
+
+div.content h1 {
+    color: #34495e; /* Dark navy for headers */
+    font-size: 26px;
+    margin-bottom: 15px;
+}
+
+div.content p {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #2c3e50; /* Dark grey-blue for body text */
+    margin-bottom: 15px;
+}
+
+/* Footer styling */
+div.footer {
+    background-color: #34495e;
+    color: #ecf0f1;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 30px;
+    font-size: 14px;
+}
+
+/* Link styling */
+a {
+    color: #3498db; /* Soft muted blue for links */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #e74c3c; /* Soft muted red for hover */
+}
+
+/* Image container styling */
+.image-container {
+    display: flex; /* Use flexbox to align images side by side */
+    justify-content: center; /* Center the images horizontally */
+    gap: 20px; /* Add some space between the images */
+}
+
+/* General image styling */
+.algo-image {
+    width: 150px; /* Set a width for the images */
+    height: auto; /* Maintain aspect ratio */
+    transition: transform 0.2s ease, filter 0.3s ease; /* Animation effect on hover */
+    position: relative; /* Position relative for overlay */
+}
+
+/* Hover effect */
+.algo-image:hover {
+    transform: scale(1.1); /* Enlarge the image slightly on hover */
+    filter: brightness(1.1); /* Brighten the image */
+}
+
+/* Overlay effect */
+.algo-image:hover::after {
+    content: ""; /* Required for the pseudo-element */
+    position: absolute; /* Position overlay */
+    top: 0; /* Align to top */
+    left: 0; /* Align to left */
+    right: 0; /* Align to right */
+    bottom: 0; /* Align to bottom */
+    background-color: rgba(255, 165, 0, 0.5); /* Semi-transparent orange overlay */
+    border-radius: 10px; /* Optional: rounded corners */
+    transition: opacity 0.3s ease; /* Animation for overlay */
+    opacity: 1; /* Make overlay visible on hover */
+}
+
+.algo-image::after {
+    opacity: 0; /* Hide overlay by default */
+    pointer-events: none; /* Allow clicks through the overlay */
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+    div.content {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    div.header {
+        font-size: 24px;
+    }
+}

@@ -1,0 +1,85 @@
+@charset "utf-8";
+
+body {
+    font: 100% Verdana, Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    color: #2c3e50; /* Dark grey-blue for text */
+    background-color: #f4f4f9; /* Light muted grey */
+}
+
+.VisualizationMainPage #mainContent {
+    background: #ffffff; /* White background for content */
+    padding: 0 20px;
+}
+
+.VisualizationMainPage #container {
+    background: #ffffff; /* White background */
+    margin: 0 auto;
+    text-align: left;
+}
+
+.VisualizationMainPage #algoControlSection {
+    background: #f8c471; /* Muted light amber */
+    color: #2c3e50; /* Dark grey-blue for text */
+}
+
+.VisualizationMainPage #generalAnimationControlSection {
+    background: #f8c471; /* Muted light amber */
+    color: #2c3e50; /* Dark grey-blue */
+}
+
+.VisualizationMainPage #header {
+    background: #34495e; /* Premium muted navy */
+    color: #ecf0f1; /* Light grey for text */
+    padding: 0 10px 0 20px;
+}
+
+.VisualizationMainPage #header a:visited {
+    text-decoration: none;
+    color: #ecf0f1; /* Light grey for visited links */
+}
+
+.VisualizationMainPage #header h1 {
+    margin: 0;
+    padding: 10px 0;
+}
+
+.VisualizationMainPage #header a:link {
+    text-decoration: none;
+    color: #ecf0f1; /* Light grey for links */
+}
+
+.VisualizationMainPage #footer a:visited {
+    text-decoration: none;
+    color: #ecf0f1; /* Light grey for visited links */
+}
+
+.VisualizationMainPage #footer a:link {
+    text-decoration: none;
+    color: #ecf0f1; /* Light grey for links */
+}
+
+.VisualizationMainPage #mainContent h1,
+.VisualizationMainPage #mainContent h2,
+.VisualizationMainPage #mainContent h3 {
+    padding: 0 20px;
+    background: #ffffff; /* White background for content */
+    color: #34495e; /* Dark navy for headings */
+}
+
+.VisualizationMainPage #footer {
+    padding: 0 10px;
+    background: #34495e; /* Premium muted navy */
+    color: #ecf0f1; /* Light grey for text */
+}
+
+.VisualizationMainPage #footer p {
+    margin: 0;
+    padding: 10px 0;
+}
+
+em {
+    font-weight: bold;
+}
