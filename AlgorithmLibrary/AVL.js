@@ -90,20 +90,113 @@ AVL.prototype.onAnimationEnded = function() {
     this.insertNextFromQueue(false);
 };
 
+//Insert Field
 AVL.prototype.addControls =  function()
 {
 	this.insertField = addControlToAlgorithmBar("Text", "");
-	this.insertField.onkeydown = this.returnSubmit(this.insertField,  this.insertCallback.bind(this), 4);
-	this.insertButton = addControlToAlgorithmBar("Button", "Insert");
-	this.insertButton.onclick = this.insertCallback.bind(this);
-	this.deleteField = addControlToAlgorithmBar("Text", "");
-	this.deleteField.onkeydown = this.returnSubmit(this.deleteField,  this.deleteCallback.bind(this), 4);
-	this.deleteButton = addControlToAlgorithmBar("Button", "Delete");
-	this.deleteButton.onclick = this.deleteCallback.bind(this);
-	this.findField = addControlToAlgorithmBar("Text", "");
-	this.findField.onkeydown = this.returnSubmit(this.findField,  this.findCallback.bind(this), 4);
-	this.findButton = addControlToAlgorithmBar("Button", "Find");
-	this.findButton.onclick = this.findCallback.bind(this);
+	this.insertField.size= 5 ;
+
+// Use an arrow function to maintain the correct `this` context
+this.insertField.onkeydown = (event) => {
+    const key = event.key;
+
+    // Allow digits, backspace, and the decimal point
+    if (/[^0-9\.]/.test(key) && key !== "Backspace") {
+        event.preventDefault();  // Prevent invalid input
+    }
+
+    // Ensure only one decimal point is allowed
+    if (key === "." && this.insertField.value.includes(".")) {
+        event.preventDefault();  // Prevent multiple decimal points
+    }
+
+    // Prevent input if the length exceeds 4 characters
+    if (this.insertField.value.length >= 4 && key !== "Backspace" && key !== ".") {
+        event.preventDefault();  // Prevent entering more than 4 characters
+    }
+};
+
+this.insertButton = addControlToAlgorithmBar("Button", "Insert");
+this.insertButton.onclick = this.insertCallback.bind(this);
+
+// Delete field
+this.deleteField = addControlToAlgorithmBar("Text", "");
+this.deleteField.size = 5;  
+
+// Allowing only digits and a single decimal point in the delete field
+this.deleteField.onkeydown = (event) => {
+    const key = event.key;
+    
+    // Allow digits, decimal point, backspace, and delete
+    if (/[^0-9\.]/.test(key) && key !== "Backspace" && key !== "Delete") {
+        event.preventDefault();  // Prevent invalid input
+    }
+    
+    // Ensure only one decimal point is allowed
+    if (key === "." && this.deleteField.value.includes(".")) {
+        event.preventDefault();  // Prevent multiple decimal points
+    }
+
+    // Prevent input if the length exceeds 4 characters
+    if (this.deleteField.value.length >= 4 && key !== "Backspace" && key !== "Delete" && key !== ".") {
+        event.preventDefault();  // Prevent entering more than 4 characters
+    }
+};
+
+// Button click event for deleting the value
+this.deleteButton = addControlToAlgorithmBar("Button", "Delete");
+this.deleteButton.onclick = this.deleteCallback.bind(this);
+
+
+// Creating the find field
+this.findField = addControlToAlgorithmBar("Text", "");
+this.findField.size=5;
+
+// Restricting the input to accept valid float or integer values
+this.findField.onkeydown = (event) => {
+    const key = event.key;
+
+    // Allow digits, decimal point, backspace, and delete
+    if (/[^0-9\.]/.test(key) && key !== "Backspace") {
+        event.preventDefault();  // Prevent invalid input
+    }
+
+    // Ensure only one decimal point is allowed
+    if (key === "." && this.findField.value.includes(".")) {
+        event.preventDefault();  // Prevent multiple decimal points
+    }
+};
+
+// Create a button to trigger the find action
+this.findButton = addControlToAlgorithmBar("Button", "Find");
+this.findButton.onclick = this.findCallback.bind(this);
+
+// Find callback function to handle finding the value
+this.findCallback = function() {
+    const findValue = parseFloat(this.findField.value); // Get the float value from input field
+
+    if (!isNaN(findValue)) {
+        console.log(`Searching for value: ${findValue}`);
+        
+        // Call a method to find the value in the AVL tree
+        const foundValues = this.findInAVL(findValue);
+        
+        if (foundValues.length > 0) {
+            console.log(`Found values: ${foundValues}`);
+            alert(`Found values: ${foundValues.join(', ')}`);
+        } else {
+            console.log("Value not found.");
+            alert("Value not found.");
+        }
+
+        // Clear the find field after the operation
+        this.findField.value = "";
+    } else {
+        alert("Please enter a valid float value to find.");
+    }
+};
+
+ // print button
 	this.printButton = addControlToAlgorithmBar("Button", "Print");
 	this.printButton.onclick = this.printCallback.bind(this);
 
@@ -131,7 +224,7 @@ AVL.prototype.randomizeCallback = function(event) {
         // Generate unique random values
         const uniqueValues = new Set();
         while (uniqueValues.size < keySize) {
-            const randomValue = this.normalizeNumber(Math.floor(Math.random() * 100) + 1, 4);
+            const randomValue = parseInt(Math.floor(Math.random() * 100) + 1);
             uniqueValues.add(randomValue);
         }
         this.randomQueue = Array.from(uniqueValues);
@@ -179,7 +272,7 @@ AVL.prototype.insertCallback = function(event)
 {
 	var insertedValue = this.insertField.value;
 	// Get text value
-	insertedValue = this.normalizeNumber(insertedValue, 4);
+	insertedValue =parseFloat(insertedValue);
 	if (insertedValue != "")
 	{
 		// set text value
@@ -193,7 +286,7 @@ AVL.prototype.deleteCallback = function(event)
 	var deletedValue = this.deleteField.value;
 	if (deletedValue != "")
 	{
-		deletedValue = this.normalizeNumber(deletedValue, 4);
+		deletedValue =parseFloat(deletedValue);
 		this.deleteField.value = "";
 		this.implementAction(this.deleteElement.bind(this),deletedValue);		
 	}
