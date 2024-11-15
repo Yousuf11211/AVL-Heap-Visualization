@@ -93,31 +93,42 @@ AVL.prototype.onAnimationEnded = function() {
 //Insert Field
 AVL.prototype.addControls =  function()
 {
-	this.insertField = addControlToAlgorithmBar("Text", "");
-	this.insertField.size= 5 ;
+// Insert field configuration to allow only float values up to 2 decimal places
+this.insertField = addControlToAlgorithmBar("Text", "");
+this.insertField.size = 5; // Adjust the size for 4-digit entries with 2 decimal places
 
-// Use an arrow function to maintain the correct `this` context
+// Allow digits, up to one decimal point, and up to two decimal places
 this.insertField.onkeydown = (event) => {
     const key = event.key;
+    const currentValue = this.insertField.value;
 
-    // Allow digits, backspace, and the decimal point
-    if (/[^0-9\.]/.test(key) && key !== "Backspace") {
-        event.preventDefault();  // Prevent invalid input
+    console.log(`Key pressed: ${key}`);
+    console.log(`Current value: ${currentValue}`);
+
+    // Allow only digits, one decimal point, and control keys (backspace, delete)
+    if (!/^[0-9.]$/.test(key) && key !== "Backspace" && key !== "Delete") {
+        console.log("Invalid key pressed. Only digits and a single decimal point are allowed.");
+        event.preventDefault(); // Prevent non-numeric, non-control keys
     }
 
-    // Ensure only one decimal point is allowed
-    if (key === "." && this.insertField.value.includes(".")) {
-        event.preventDefault();  // Prevent multiple decimal points
+    // Prevent more than one decimal point
+    if (key === "." && currentValue.includes(".")) {
+        console.log("Decimal point already present, preventing additional decimal.");
+        event.preventDefault();
     }
 
-    // Prevent input if the length exceeds 4 characters
-    if (this.insertField.value.length >= 4 && key !== "Backspace" && key !== ".") {
-        event.preventDefault();  // Prevent entering more than 4 characters
+    // Limit to two decimal places
+    if (currentValue.includes(".") && currentValue.split(".")[1].length >= 2 && key !== "Backspace" && key !== "Delete") {
+        console.log("Two decimal places already present, preventing additional input.");
+        event.preventDefault();
     }
 };
 
+// Button configuration
 this.insertButton = addControlToAlgorithmBar("Button", "Insert");
 this.insertButton.onclick = this.insertCallback.bind(this);
+console.log("Insert field and button initialized.");
+
 
 // Delete field
 this.deleteField = addControlToAlgorithmBar("Text", "");
