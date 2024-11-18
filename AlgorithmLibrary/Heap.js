@@ -1,3 +1,31 @@
+
+// Copyright 2011 David Galles, University of San Francisco. All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification, are
+// permitted provided that the following conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright notice, this list of
+// conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list
+// of conditions and the following disclaimer in the documentation and/or other materials
+// provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY <COPYRIGHT HOLDER> ``AS IS'' AND ANY EXPRESS OR IMPLIED
+// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+// FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+// ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+// NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+// ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// The views and conclusions contained in the software and documentation are those of the
+// authors and should not be interpreted as representing official policies, either expressed
+// or implied, of the University of San Francisco
+
+
 function Heap(am)
 {
 	this.init(am);
@@ -9,7 +37,8 @@ Heap.prototype.constructor = Heap;
 Heap.superclass = Algorithm.prototype;
 
 
-var ARRAY_SIZE  = 30;
+
+var ARRAY_SIZE  = 32;
 var ARRAY_ELEM_WIDTH = 30;
 var ARRAY_ELEM_HEIGHT = 25;
 var ARRAY_INITIAL_X = 30;
@@ -32,141 +61,231 @@ Heap.prototype.init = function(am)
 					  310, 310, 380, 380, 380, 380, 380, 380, 380, 380, 380, 380, 380, 
 					  380, 380, 380, 380, 380];
 	this.commands = [];
-	this.createArray();
+	this.createArray();  
+
+
+	
+	/*this.nextIndex = 0;
+	this.this.commands = [];
+	this.cmd("CreateLabel", 0, "", 20, 50, 0);
+	this.animationManager.StartNewAnimation(this.this.commands);
+	this.animationManager.skipForward();
+	this.animationManager.clearHistory(); */
+	
 }
+
 Heap.prototype.addControls =  function()
 {
-	this.insertField = addControlToAlgorithmBar("Text", "");
-	this.insertField.onkeydown = this.returnSubmit(this.insertField,  this.insertCallback.bind(this), 4);
-	this.insertButton = addControlToAlgorithmBar("Button", "Insert");
-	this.insertButton.onclick = this.insertCallback.bind(this);
+// Insert field setup for accepting float values up to 2 decimal places
+this.insertField = addControlToAlgorithmBar("Text", ""); 
+this.insertField.size = 5; // Max display size corresponds to 5 characters
 
-	this.deleteField = addControlToAlgorithmBar("Text", "");
-	this.deleteField.onkeydown = this.returnSubmit(this.deleteField,  this.deleteKeyCallback.bind(this), 4);
-	this.deleteButton = addControlToAlgorithmBar("Button", "Delete");
-	this.deleteButton.onclick = this.deleteKeyCallback.bind(this);
-	
-	this.removeSmallestButton = addControlToAlgorithmBar("Button", "Remove Smallest");
+// Handle keydown event to enforce float input with up to two decimal places
+this.insertField.onkeydown = (event) => {
+    const key = event.key;
+    let currentValue = this.insertField.value;
+    console.log(`Key pressed: "${key}"`);
+    console.log(`Current value in field: "${currentValue}"`);
+
+    // Allow only digits, a single decimal point, backspace, delete, and arrow keys
+    if (!/^[0-9.]$/.test(key) && key !== "Backspace" && key !== "Delete" && key !== "ArrowLeft" && key !== "ArrowRight") {
+        console.log("Invalid key pressed. Only digits, a single decimal point, and control keys are allowed.");
+        event.preventDefault(); // Block invalid input
+        return;
+    }
+
+    // Prevent multiple decimal points
+    if (key === "." && currentValue.includes(".")) {
+        console.log("Decimal point already exists. Preventing additional decimal point.");
+        event.preventDefault();
+        return;
+    }
+
+    // Restrict input to two decimal places if a decimal point is present
+    const decimalIndex = currentValue.indexOf(".");
+    if (decimalIndex !== -1 && currentValue.slice(decimalIndex + 1).length >= 2 && key !== "Backspace" && key !== "Delete") {
+        console.log("Two decimal places already entered. Blocking further input.");
+        event.preventDefault();
+        return;
+    }
+
+    // Prevent leading zero unless followed by a decimal point
+    if (currentValue === "0" && key !== "." && key !== "Backspace" && key !== "Delete") {
+        console.log("Leading zero is not allowed unless followed by a decimal point.");
+        event.preventDefault();
+        return;
+    }
+
+    // Enforce a maximum length of 5 characters for the entire input
+    if (currentValue.length >= 5 && key !== "Backspace" && key !== "Delete" && key !== "ArrowLeft" && key !== "ArrowRight") {
+        console.log("Maximum input length of 5 characters reached. Blocking further input.");
+        event.preventDefault();
+    }
+};
+
+// Insert button setup
+this.insertButton = addControlToAlgorithmBar("Button", "Insert");
+this.insertButton.onclick = this.insertCallback.bind(this);
+console.log("Insert field and button initialized for float input up to 2 decimal places and max length 5.");
+
+
+
+	this.removeSmallestButton = addControlToAlgorithmBar("Button", "Delete Min");
 	this.removeSmallestButton.onclick = this.removeSmallestCallback.bind(this);
+
+// Delete field setup for accepting float values up to 2 decimal places with max length 5
+this.deleteField = addControlToAlgorithmBar("Text", ""); 
+this.deleteField.size = 5; // Adjust the input field display size
+
+// Handle keydown event to enforce float input with up to two decimal places and max length of 5
+this.deleteField.onkeydown = (event) => {
+    const key = event.key;
+    let currentValue = this.deleteField.value;
+    console.log(`Key pressed: "${key}"`);
+    console.log(`Current value in field: "${currentValue}"`);
+
+    // Allow only digits, a single decimal point, backspace, delete, and arrow keys
+    if (!/^[0-9.]$/.test(key) && key !== "Backspace" && key !== "Delete" && key !== "ArrowLeft" && key !== "ArrowRight") {
+        console.log("Invalid key pressed. Only digits, a single decimal point, and control keys are allowed.");
+        event.preventDefault(); // Block invalid input
+        return;
+    }
+
+    // Prevent multiple decimal points
+    if (key === "." && currentValue.includes(".")) {
+        console.log("Decimal point already exists. Preventing additional decimal point.");
+        event.preventDefault();
+        return;
+    }
+
+    // Prevent decimal point at the end of the value
+    if (key === "." && currentValue.endsWith(".")) {
+        console.log("Decimal point at the end is not allowed.");
+        event.preventDefault();
+        return;
+    }
+
+    // Restrict input to two decimal places if a decimal point is present
+    const decimalIndex = currentValue.indexOf(".");
+    if (decimalIndex !== -1 && currentValue.slice(decimalIndex + 1).length >= 2 && key !== "Backspace" && key !== "Delete") {
+        console.log("Two decimal places already entered. Blocking further input.");
+        event.preventDefault();
+        return;
+    }
+
+    // Enforce a maximum length of 5 characters (including decimal point and digits)
+    if (currentValue.length >= 5 && key !== "Backspace" && key !== "Delete" && key !== "ArrowLeft" && key !== "ArrowRight") {
+        console.log("Maximum input length of 5 characters reached. Blocking further input.");
+        event.preventDefault();
+    }
+
+    // Prevent leading zero unless followed by a decimal point
+    if (currentValue === "0" && key !== "." && key !== "Backspace" && key !== "Delete") {
+        console.log("Leading zero is not allowed unless followed by a decimal point.");
+        event.preventDefault();
+        return;
+    }
+};
+
+// Delete button setup
+this.deleteButton = addControlToAlgorithmBar("Button", "Delete");
+this.deleteButton.onclick = this.deleteCallback.bind(this);
+console.log("Delete field and button initialized for float input up to 2 decimal places and max length 5.");
+
 
 	this.clearHeapButton = addControlToAlgorithmBar("Button", "Clear Heap");
 	this.clearHeapButton.onclick = this.clearCallback.bind(this);
 
-	this.keySizeField = addControlToAlgorithmBar("Text", "");
-	this.keySizeField.onkeydown = this.returnSubmit(this.keySizeField,  this.buildHeapCallback.bind(this), 4);
 	this.buildHeapButton = addControlToAlgorithmBar("Button", "BuildHeap");
 	this.buildHeapButton.onclick = this.buildHeapCallback.bind(this);
+
+	this.randomizeField = addControlToAlgorithmBar("Text", ""); // Input for size
+	this.randomizeField.onkeydown = this.returnSubmit(this.randomizeField, this.randomizeCallback.bind(this), 4, true); 
+    this.randomizeButton = addControlToAlgorithmBar("Button", "Randomize");
+    this.randomizeButton.onclick = this.randomizeCallback.bind(this);
+
 }
 
+Heap.prototype.randomizeCallback = function(event) {
+    const size = parseInt(this.randomizeField.value);
 
-Heap.prototype.createArray = function()
-{
-	this.arrayData = new Array(ARRAY_SIZE);
-	this.arrayLabels = new Array(ARRAY_SIZE);
-	this.arrayRects = new Array(ARRAY_SIZE);
-	this.circleObjs = new Array(ARRAY_SIZE);
-	this.ArrayXPositions = new Array(ARRAY_SIZE);
-	this.currentHeapSize = 0;
-
-	for (var i = 0; i < ARRAY_SIZE; i++)
-	{
-		this.ArrayXPositions[i] = ARRAY_INITIAL_X + i *ARRAY_ELEM_WIDTH;
-		this.arrayLabels[i] = this.nextIndex++;
-		this.arrayRects[i] = this.nextIndex++;
-		this.circleObjs[i] = this.nextIndex++;
-		this.cmd("CreateRectangle", this.arrayRects[i], "", ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, this.ArrayXPositions[i] , ARRAY_Y_POS)
-		this.cmd("SetForegroundColor", this.arrayRects[i], "#808080"); // Set to grey
-		this.cmd("CreateLabel", this.arrayLabels[i], i,  this.ArrayXPositions[i], ARRAY_LABEL_Y_POS);
-		this.cmd("SetForegroundColor", this.arrayLabels[i], "#FFA500");
-	}
-	this.cmd("SetText", this.arrayRects[0], "-INF");
-	this.swapLabel1 = this.nextIndex++;
-	this.swapLabel2 = this.nextIndex++;
-	this.swapLabel3 = this.nextIndex++;
-	this.swapLabel4 = this.nextIndex++;
-	this.descriptLabel1 = this.nextIndex++;
-	this.descriptLabel2 = this.nextIndex++;
-	this.cmd("CreateLabel", this.descriptLabel1, "", 20, 10,  0);
-	this.animationManager.StartNewAnimation(this.commands);
-	this.animationManager.skipForward();
-	this.animationManager.clearHistory();
-}
-
-Heap.prototype.deleteKeyCallback = function(event) {
-    const keyToDelete = parseInt(this.deleteField.value, 10);
-    this.deleteField.value = ""; // Clear the delete field
-
-    if (isNaN(keyToDelete)) {
-        console.log("Invalid input: Please enter a valid number to delete.");
+    // Ensure size is valid and within allowed limits
+    if (isNaN(size) || size <= 0 || size > 50) {  // Adjust max size as needed
+        alert("Please enter a positive integer within a reasonable range.");
         return;
     }
 
-    // Find the index of the key to delete in the heap array
-    let index = -1;
-    for (let i = 1; i <= this.currentHeapSize; i++) {
-        if (parseInt(this.arrayData[i]) === keyToDelete) {
-            index = i;
-            break;
-        }
-    }
+	this.randomizeField.value = "";
+	ARRAY_SIZE = size;
+    this.createArray();
 
-    if (index === -1) {
-        console.log(`Key ${keyToDelete} not found in the heap.`);
-        return;
-    }
-
-    // Debugging Information
-    console.log(`Deleting key ${keyToDelete} at index ${index}.`);
-    this.commands = []; // Clear previous commands
-
-    // Step 1: Highlight the target node to delete
-    this.cmd("SetHighlight", this.circleObjs[index], 1);
-    this.cmd("Step");
-
-    // Step 2: Move last element to the deleted node's position, clear last element
-    if (index !== this.currentHeapSize) {
-        console.log(`Replacing value at index ${index} with last element: ${this.arrayData[this.currentHeapSize]}`);
-        this.cmd("SetText", this.circleObjs[index], this.arrayData[this.currentHeapSize]);
-        this.arrayData[index] = this.arrayData[this.currentHeapSize];
-    }
-    this.cmd("Delete", this.circleObjs[this.currentHeapSize]);
-    this.currentHeapSize--;
-
-    // Remove highlight
-    this.cmd("SetHighlight", this.circleObjs[index], 0);
-    console.log("Last element deleted. Current heap size:", this.currentHeapSize);
-
-    // Step 3: Check if heap property needs to be restored
-    if (index <= this.currentHeapSize) {
-        // Step 4: Apply `pushDown` to maintain heap order after deletion
-        this.pushDown(index);
-        console.log(`Heap rebalanced starting from index ${index}`);
-    } else {
-        console.log("No rebalancing needed as this was the last element.");
-    }
-
-    // Final Step: Execute all commands for animation
-    return this.commands;
+	this.buildHeapCallback(event);
 };
 
 
+Heap.prototype.createArray = function() {
+
+    this.animationManager.resetAll();
+    this.commands = new Array();
+
+    // Initialize arrays and properties for the new array size
+    this.arrayData = new Array(ARRAY_SIZE);
+    this.arrayLabels = new Array(ARRAY_SIZE);
+    this.arrayRects = new Array(ARRAY_SIZE);
+    this.circleObjs = new Array(ARRAY_SIZE);
+    this.ArrayXPositions = new Array(ARRAY_SIZE);
+    this.currentHeapSize = 0;
 
 
+    for (let i = 0; i < ARRAY_SIZE; i++) {
+        this.ArrayXPositions[i] = ARRAY_INITIAL_X + i * ARRAY_ELEM_WIDTH;
+        this.arrayLabels[i] = this.nextIndex++;
+        this.arrayRects[i] = this.nextIndex++;
+        this.circleObjs[i] = this.nextIndex++;
 
+        // Create rectangles and labels for the array elements
+        this.cmd("CreateRectangle", this.arrayRects[i], "",
+ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, this.ArrayXPositions[i],
+ARRAY_Y_POS);
+        this.cmd("CreateLabel", this.arrayLabels[i], i,
+this.ArrayXPositions[i], ARRAY_LABEL_Y_POS);
+        this.cmd("SetForegroundColor", this.arrayLabels[i], "#0000FF");
+    }
 
+    // Initialize first element to display "-INF" as a placeholder
+    this.cmd("SetText", this.arrayRects[0], "-INF");
 
+    // Extra labels for swapping animation
+    this.swapLabel1 = this.nextIndex++;
+    this.swapLabel2 = this.nextIndex++;
+    this.swapLabel3 = this.nextIndex++;
+    this.swapLabel4 = this.nextIndex++;
+    this.descriptLabel1 = this.nextIndex++;
+    this.descriptLabel2 = this.nextIndex++;
 
+    this.cmd("CreateLabel", this.descriptLabel1, "", 20, 10,  0);
+    //this.cmd("CreateLabel", this.descriptLabel2, "", this.nextIndex,40, 120, 0);
 
+    // Start the animation for the created array
+    this.animationManager.StartNewAnimation(this.commands);
+    this.animationManager.skipForward();
+    this.animationManager.clearHistory();
 
+    // Listen for the AnimationEnded event
+    this.animationManager.addListener("AnimationEnded", this,
+this.onAnimationEnded);
+};
 
-
+Heap.prototype.onAnimationEnded = function() {
+	console.log("OnAnimationEnded successfully.");
+};
 
 
 Heap.prototype.insertCallback = function(event)
 {
 	var insertedValue;
 	
-	insertedValue = this.normalizeNumber(this.insertField.value, 4);
+	insertedValue = (this.insertField.value);
 	if (insertedValue != "")
 	{
 		this.insertField.value = "";
@@ -175,11 +294,31 @@ Heap.prototype.insertCallback = function(event)
 }
 
 
+Heap.prototype.deleteCallback = function () {
+    const valueToDelete = parseFloat(this.deleteField.value.trim());
+    this.deleteField.value = ""; // Clear the input field after reading the value
+
+    if (isNaN(valueToDelete)) {
+        console.log("Invalid input: Please enter a valid number to delete.");
+        return;
+    }
+
+    console.log(`Initiating deletion of value: ${valueToDelete}`);
+    this.implementAction(this.deleteElement.bind(this), valueToDelete);
+};
+
+
+
+
+
+//TODO:  Make me undoable!!
 Heap.prototype.clearCallback = function(event)
 {
 	this.commands = new Array();
 	this.implementAction(this.clear.bind(this),"");
 }
+
+//TODO:  Make me undoable!!
 Heap.prototype.clear = function()
 {
 	
@@ -324,44 +463,58 @@ Heap.prototype.removeSmallest = function(dummy)
 	
 }
 
-Heap.prototype.buildHeapCallback = function(event)
-{
-	this.implementAction(this.buildHeap.bind(this),"");			
-}
+Heap.prototype.buildHeapCallback = function(event) {
+    console.log("BuildHeap button clicked. Initializing heap build...");
+    this.implementAction(this.buildHeap.bind(this), "");
+};
 
-Heap.prototype.buildHeap = function(ignored)
-{
-	var keySizeFieldValue;
-	this.commands = [];
-	this.clear();
-	keySizeFieldValue =this.keySizeField.value;
-	if (keySizeFieldValue != "")
-	{
-		ARRAY_SIZE=parseInt(keySizeFieldValue, 10) + 1;
-		//this.createArray();
-	}
+
+Heap.prototype.buildHeap = function(ignored) {
 	
-	for (var i = 1; i <ARRAY_SIZE; i++)
-	{
-		this.arrayData[i] = this.normalizeNumber(String(Math.floor(Math.random() * 101)), 4);
-		this.cmd("CreateCircle", this.circleObjs[i], this.arrayData[i], this.HeapXPositions[i], this.HeapYPositions[i]);
-		this.cmd("SetText", this.arrayRects[i], this.arrayData[i]);
-		if (i > 1)
-		{
-			this.cmd("Connect", this.circleObjs[Math.floor(i/2)], this.circleObjs[i]);
-		}
-		
-	}
-	this.cmd("Step");
-	this.currentHeapSize = ARRAY_SIZE - 1;
-	var nextElem = this.currentHeapSize;
-	while(nextElem > 0)
-	{
-		this.pushDown(nextElem);
-		nextElem = nextElem - 1;
-	}
-	return this.commands;
-}
+
+    console.log("Starting buildHeap process...");
+    this.commands = [];
+    
+    console.log("Clearing the heap...");
+    this.clear();
+    
+	// Generate unique random values between 1 and 100
+    const uniqueValues = new Set();
+    while (uniqueValues.size < ARRAY_SIZE - 1) { // Adjusting for 1-based index
+        uniqueValues.add(Math.floor(Math.random() * 100) + 1);
+    }
+    
+	 // Convert set to array for easy indexing
+	 const uniqueArray = Array.from(uniqueValues);
+
+    for (var i = 1; i < ARRAY_SIZE; i++) {
+        this.arrayData[i] = parseInt(String(uniqueArray[i - 1])); // Assign unique value
+        console.log(`Inserting element at index ${i}: ${this.arrayData[i]}`);
+        
+        this.cmd("CreateCircle", this.circleObjs[i], this.arrayData[i], this.HeapXPositions[i], this.HeapYPositions[i]);
+        this.cmd("SetText", this.arrayRects[i], this.arrayData[i]);
+        
+        if (i > 1) {
+            console.log(`Connecting node at index ${Math.floor(i / 2)} with node at index ${i}`);
+            this.cmd("Connect", this.circleObjs[Math.floor(i / 2)], this.circleObjs[i]);
+        }
+    }
+    
+    console.log("All elements inserted, initializing heapify process...");
+    this.cmd("Step");
+    this.currentHeapSize = ARRAY_SIZE - 1;
+    
+    var nextElem = this.currentHeapSize;
+    while (nextElem > 0) {
+        console.log(`Pushing down element at index ${nextElem}`);
+        this.pushDown(nextElem);
+        nextElem = nextElem - 1;
+    }
+    
+    console.log("Heap built successfully.");
+    return this.commands;
+};
+
 
 Heap.prototype.insertElement = function(insertedValue)
 {
@@ -422,6 +575,70 @@ Heap.prototype.insertElement = function(insertedValue)
 	return this.commands;
 }
 
+Heap.prototype.deleteElement = function(valueToDelete) {
+    this.commands = new Array();
+    this.cmd("SetText", this.descriptLabel1, "");
+
+    if (this.currentHeapSize == 0) {
+        this.cmd("SetText", this.descriptLabel1, "Heap is empty, cannot delete element");
+        return this.commands;
+    }
+
+    // Find the index of the value to delete
+    let indexToDelete = -1;
+    for (let i = 1; i <= this.currentHeapSize; i++) {
+        if (this.arrayData[i] == valueToDelete) {
+            indexToDelete = i;
+            break;
+        }
+    }
+
+    if (indexToDelete == -1) {
+        this.cmd("SetText", this.descriptLabel1, `Value ${valueToDelete} not found in the heap`);
+        return this.commands;
+    }
+
+    this.cmd("SetText", this.descriptLabel1, `Deleting element: ${valueToDelete}`);
+    this.cmd("Step");
+
+    if (indexToDelete == this.currentHeapSize) {
+        // If it's the last element, just remove it
+        this.cmd("Delete", this.circleObjs[indexToDelete]);
+        this.cmd("SetText", this.arrayRects[indexToDelete], "");
+        this.currentHeapSize--;
+    } else {
+        // Swap the element with the last element and remove it
+        this.swap(indexToDelete, this.currentHeapSize);
+        this.cmd("Delete", this.circleObjs[this.currentHeapSize]);
+        this.cmd("SetText", this.arrayRects[this.currentHeapSize], "");
+        this.currentHeapSize--;
+
+        // Restore heap property by pushing down or bubbling up
+        const parentIndex = Math.floor(indexToDelete / 2);
+
+        if (parentIndex > 0 && this.arrayData[indexToDelete] < this.arrayData[parentIndex]) {
+            this.bubbleUp(indexToDelete);
+        } else {
+            this.pushDown(indexToDelete);
+        }
+    }
+
+    this.cmd("SetText", this.descriptLabel1, `Deleted element: ${valueToDelete}`);
+    return this.commands;
+};
+
+// Helper method to bubble up the element
+Heap.prototype.bubbleUp = function(index) {
+    let currentIndex = index;
+    let parentIndex = Math.floor(currentIndex / 2);
+
+    while (currentIndex > 1 && this.arrayData[currentIndex] < this.arrayData[parentIndex]) {
+        this.swap(currentIndex, parentIndex);
+        currentIndex = parentIndex;
+        parentIndex = Math.floor(currentIndex / 2);
+    }
+};
+
 Heap.prototype.disableUI = function(event)
 {
 	this.insertField.disabled = true;
@@ -429,6 +646,8 @@ Heap.prototype.disableUI = function(event)
 	this.removeSmallestButton.disabled = true;
 	this.clearHeapButton.disabled = true;
 	this.buildHeapButton.disabled = true;
+	this.randomizeField.disabled = true;
+	this.randomizeButton.disabled = true;
 }
 
 Heap.prototype.enableUI = function(event)
@@ -438,6 +657,8 @@ Heap.prototype.enableUI = function(event)
 	this.removeSmallestButton.disabled = false;
 	this.clearHeapButton.disabled = false;
 	this.buildHeapButton.disabled = false;
+	this.randomizeField.disabled = false;
+	this.randomizeButton.disabled = false;
 }
 
 
@@ -448,3 +669,4 @@ function init()
 	var animManag = initCanvas();
 	currentAlg = new Heap(animManag, canvas.width, canvas.height);
 }
+Heap.txt
