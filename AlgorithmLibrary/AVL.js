@@ -97,7 +97,7 @@ AVL.prototype.addControls =  function()
 this.insertField = addControlToAlgorithmBar("Text", "");
 this.insertField.size = 5; // Adjust the size for 4-digit entries with 2 decimal places
 
-// Allow digits, up to one decimal point, and up to two decimal places
+// Handle keydown event to enforce float input with up to two decimal places
 this.insertField.onkeydown = (event) => {
     const key = event.key;
     const currentValue = this.insertField.value;
@@ -105,8 +105,8 @@ this.insertField.onkeydown = (event) => {
     console.log(`Key pressed: ${key}`);
     console.log(`Current value: ${currentValue}`);
 
-    // Allow only digits, one decimal point, and control keys (backspace, delete)
-    if (!/^[0-9.]$/.test(key) && key !== "Backspace" && key !== "Delete") {
+    // Allow only digits, a decimal point, and control keys (backspace, delete, arrow keys)
+    if (!/^[0-9.]$/.test(key) && key !== "Backspace" && key !== "Delete" && key !== "ArrowLeft" && key !== "ArrowRight") {
         console.log("Invalid key pressed. Only digits and a single decimal point are allowed.");
         event.preventDefault(); // Prevent non-numeric, non-control keys
     }
@@ -122,6 +122,30 @@ this.insertField.onkeydown = (event) => {
         console.log("Two decimal places already present, preventing additional input.");
         event.preventDefault();
     }
+
+    // Restrict input to a maximum of 5 characters (e.g., "9999", "99.99", "10000")
+    if (currentValue.length >= 5 && key !== "Backspace" && key !== "Delete" && key !== "ArrowLeft" && key !== "ArrowRight") {
+        console.log("Maximum input length of 5 characters reached. Blocking further input.");
+        event.preventDefault();
+    }
+
+    // Prevent a decimal point at the end of the value (e.g., "1111.")
+    if (key === "." && currentValue.endsWith(".")) {
+        console.log("Preventing decimal point at the end.");
+        event.preventDefault();
+    }
+
+    // Prevent multiple leading zeros (e.g., "001" or "00"), but allow "0" or "100"
+    if (/^0{2,}/.test(currentValue)) {
+        console.log("Multiple leading zeros are not allowed.");
+        event.preventDefault();
+    }
+
+    // Allow leading zero only if it is followed by a decimal point (e.g., "0." is allowed)
+    if (key === "0" && currentValue === "0") {
+        event.preventDefault();  // Prevent the insertion of more zeros
+        console.log("Only one leading zero is allowed.");
+    }
 };
 
 // Button configuration
@@ -130,33 +154,61 @@ this.insertButton.onclick = this.insertCallback.bind(this);
 console.log("Insert field and button initialized.");
 
 
-// Delete field
-this.deleteField = addControlToAlgorithmBar("Text", "");
-this.deleteField.size = 5;  
 
-// Allowing only digits and a single decimal point in the delete field
+
+// Delete field setup for limiting length to 5 characters and 2 decimal places
+this.deleteField = addControlToAlgorithmBar("Text", "");
+this.deleteField.size = 5;  // Set the size of the input field (to display 5 characters)
+
+// Handle keydown event to enforce input restrictions
 this.deleteField.onkeydown = (event) => {
     const key = event.key;
-    
-    // Allow digits, decimal point, backspace, and delete
-    if (/[^0-9\.]/.test(key) && key !== "Backspace" && key !== "Delete") {
+    let currentValue = this.deleteField.value;
+
+    // Allow digits, decimal point, backspace, delete, and arrow keys
+    if (/[^0-9\.]/.test(key) && key !== "Backspace" && key !== "Delete" && key !== "ArrowLeft" && key !== "ArrowRight") {
         event.preventDefault();  // Prevent invalid input
-    }
-    
-    // Ensure only one decimal point is allowed
-    if (key === "." && this.deleteField.value.includes(".")) {
-        event.preventDefault();  // Prevent multiple decimal points
+        return;
     }
 
-    // Prevent input if the length exceeds 4 characters
-    if (this.deleteField.value.length >= 4 && key !== "Backspace" && key !== "Delete" && key !== ".") {
-        event.preventDefault();  // Prevent entering more than 4 characters
+    // Prevent multiple leading zeros (e.g., "001" or "00")
+    // Allow leading zero only if it is followed by a decimal point (e.g., "0." is allowed)
+	if (key === "0" && currentValue === "0") {
+    	event.preventDefault();  // Prevent the insertion of more zeros
+    	console.log("Only one leading zero is allowed.");
+    }
+
+    // Ensure only one decimal point is allowed
+    if (key === "." && currentValue.includes(".")) {
+        event.preventDefault();  // Prevent multiple decimal points
+        return;
+    }
+
+    // Restrict input to a maximum of 5 characters
+    if (currentValue.length >= 5 && key !== "Backspace" && key !== "Delete" && key !== "ArrowLeft" && key !== "ArrowRight") {
+        event.preventDefault();  // Block further input if length exceeds 5 characters
+        return;
+    }
+
+    // Prevent a decimal point at the end of the value (e.g., "1111.")
+    if (key === "." && currentValue.endsWith(".")) {
+        event.preventDefault();  // Prevent decimal point at the end
+        return;
+    }
+
+    // Ensure there are no more than 2 digits after the decimal point
+    const decimalIndex = currentValue.indexOf(".");
+    if (decimalIndex !== -1 && currentValue.slice(decimalIndex + 1).length >= 2 && key !== "Backspace" && key !== "Delete") {
+        event.preventDefault();  // Prevent more than 2 decimal places
+        return;
     }
 };
 
-// Button click event for deleting the value
+// Delete button setup
 this.deleteButton = addControlToAlgorithmBar("Button", "Delete");
 this.deleteButton.onclick = this.deleteCallback.bind(this);
+
+console.log("Delete field initialized with length limit of 5 characters, decimal point restrictions, and up to 2 decimal places.");
 
 
 // Creating the find field
@@ -279,18 +331,24 @@ AVL.prototype.insertNextFromQueue = function(isDirectCall = false) {
 
 
 
-AVL.prototype.insertCallback = function(event)
-{
-	var insertedValue = this.insertField.value;
-	// Get text value
-	insertedValue =parseFloat(insertedValue);
-	if (insertedValue != "")
-	{
-		// set text value
-		this.insertField.value = "";
-		this.implementAction(this.insertElement.bind(this), insertedValue);
-	}
-}
+AVL.prototype.insertCallback = function(event) {
+    var insertedValue = this.insertField.value;
+    
+    // Convert the value to a float
+    insertedValue = parseFloat(insertedValue);
+
+    // Check if the value is not empty and is a valid number (including 0)
+    if (!isNaN(insertedValue) && insertedValue !== "") {
+        // Clear the input field after inserting the value
+        this.insertField.value = "";
+        
+        // Implement the action with the inserted value
+        this.implementAction(this.insertElement.bind(this), insertedValue);
+    } else {
+        console.log("Invalid value entered. Insertion ignored.");
+    }
+};
+
 
 AVL.prototype.deleteCallback = function(event)
 {

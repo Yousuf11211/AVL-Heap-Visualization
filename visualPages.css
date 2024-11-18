@@ -85,26 +85,34 @@ a:hover {
     color: #e74c3c; /* Soft muted red for hover */
 }
 
-/* Image container styling */
-.image-container {
-    display: flex; /* Use flexbox to align images side by side */
-    justify-content: center; /* Center the images horizontally */
-    gap: 20px; /* Add some space between the images */
+/* Center the buttons */
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Spacing between buttons */
+    margin-top: 20px; /* Add spacing from other content */
 }
 
-/* General image styling */
-.algo-image {
-    width: 150px; /* Set a width for the images */
-    height: auto; /* Maintain aspect ratio */
-    transition: transform 0.2s ease, filter 0.3s ease; /* Animation effect on hover */
-    position: relative; /* Position relative for overlay */
+/* Style the buttons */
+.algo-button {
+    display: inline-block;
+    padding: 15px 30px; /* Adjust padding for button size */
+    background-color: #f4923c; /* Button color */
+    color: #ffffff; /* Text color */
+    text-decoration: none; /* Remove underline */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 18px; /* Text size */
+    font-weight: bold; /* Bold text */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Hover effects */
 }
 
-/* Hover effect */
-.algo-image:hover {
-    transform: scale(1.1); /* Enlarge the image slightly on hover */
-    filter: brightness(1.1); /* Brighten the image */
+/* Button hover effect */
+.algo-button:hover {
+    background-color: #f8c471; /* Darker blue on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
 }
+
 
 /* Overlay effect */
 .algo-image:hover::after {
