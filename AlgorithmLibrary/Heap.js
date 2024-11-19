@@ -130,7 +130,7 @@ console.log("Insert field and button initialized for float input up to 2 decimal
 
 
 
-this.removeSmallestButton = addControlToAlgorithmBar("Button", "Delete Min");
+this.removeSmallestButton = addControlToAlgorithmBar("Button", "Delete Min(Root)");
 this.removeSmallestButton.onclick = this.removeSmallestCallback.bind(this);
 
 // Delete field setup for accepting float values up to 2 decimal places with max length 5
