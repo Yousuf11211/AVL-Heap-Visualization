@@ -130,8 +130,8 @@ console.log("Insert field and button initialized for float input up to 2 decimal
 
 
 
-	this.removeSmallestButton = addControlToAlgorithmBar("Button", "Delete Min");
-	this.removeSmallestButton.onclick = this.removeSmallestCallback.bind(this);
+this.removeSmallestButton = addControlToAlgorithmBar("Button", "Delete Min");
+this.removeSmallestButton.onclick = this.removeSmallestCallback.bind(this);
 
 // Delete field setup for accepting float values up to 2 decimal places with max length 5
 this.deleteField = addControlToAlgorithmBar("Text", ""); 
@@ -210,8 +210,8 @@ Heap.prototype.randomizeCallback = function(event) {
     const size = parseInt(this.randomizeField.value);
 
     // Ensure size is valid and within allowed limits
-    if (isNaN(size) || size <= 0 || size > 50) {  // Adjust max size as needed
-        alert("Please enter a positive integer within a reasonable range.");
+    if (isNaN(size) || size <= 0 || size > 32) {  
+        alert("Please enter a positive integer within a reasonable range(<=32).");
         return;
     }
 
@@ -336,7 +336,6 @@ Heap.prototype.reset = function()
 {
 	this.currentHeapSize = 0;
 }
-
 Heap.prototype.removeSmallestCallback = function(event)
 {
 	this.implementAction(this.removeSmallest.bind(this),"");
