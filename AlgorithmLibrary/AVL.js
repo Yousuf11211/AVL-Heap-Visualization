@@ -278,8 +278,13 @@ AVL.prototype.reset = function()
 
 AVL.prototype.randomizeCallback = function(event) {
     const keySize = parseInt(this.randomizeField.value);
+	    // Ensure size is valid and within allowed limits
+	if (isNaN(keySize) || keySize <= 0 || keySize >= 101) {  
+		alert("Please enter a positive integer within a reasonable range(<=100).");
+		return;
+	}
 
-    if (!isNaN(keySize) && keySize > 0) {
+    else if (!isNaN(keySize) && keySize > 0) {
         this.randomizeField.value = ""; // Clear the input field
         this.isRandomizing = true;      // Set flag to indicate batch insertion
         this.randomQueue = [];
