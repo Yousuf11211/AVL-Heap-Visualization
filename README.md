@@ -34,10 +34,10 @@ Insert random elements into the heap using the 'Insert Random' button.
 Specify a key to delete using the 'Delete' input field and press the 'Delete' button to remove it and rebalance the heap.
 
 # Technology Stack
-HTML
-CSS
-JavaScript
-D3.js (for animations)
+1)HTML.
+2)CSS.
+3)JavaScript.
+4)D3.js (for animations).
 # Contributing
 Feel free to fork this repository and submit pull requests with improvements. If you encounter any bugs or have suggestions, please open an issue.
 
