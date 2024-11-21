@@ -21,7 +21,7 @@ An enhanced version of the AVL Tree and Heap Visualization Tool by galles that o
 Clone the repository:
 bash
 Copy code
-git clone https://github.com/your-username/avl-heap-visualization.git
+git clone https://github.com/Yousuf11211/Avl-Heap-Visualization.git
 Open the home.html file in your browser to view the visualizations.
 
 # Usage
