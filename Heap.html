@@ -1,71 +1,75 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		
-		<title>
-			Heap Visualization
-		</title>
-		
-		<!-- css sheet for how the page is laid out -->
-		
-		<link rel="stylesheet" href="visualizationPageStyle.css">
-       
-		<link rel="stylesheet" href="ThirdParty/jquery-ui-1.8.11.custom.css">
-				
-		<script src="ThirdParty/jquery-1.5.2.min.js"></script>
-		<script src="ThirdParty/jquery-ui-1.8.11.custom.min.js"></script>
-				
-		<!-- Javascript for the actual visualization code -->
-		<script type = "text/javascript" src = "AnimationLibrary/CustomEvents.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/UndoFunctions.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/AnimatedObject.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/AnimatedLabel.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/AnimatedCircle.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/AnimatedRectangle.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/AnimatedLinkedList.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/HighlightCircle.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/Line.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/ObjectManager.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/AnimationMain.js"> </script>
-		<script type = "text/javascript" src = "AlgorithmLibrary/Algorithm.js"> </script>
-		<script type = "text/javascript" src = "AlgorithmLibrary/Heap.js"> </script> 
-				
-			
-	 </head> 
-	
-	<body onload="init();" class="VisualizationMainPage">
-		
-		<div id = "container">
-			
-			<div id="header">  
-				<center><h1>Min Heap</h1></center>
-			</div>
-			
-			<div = id = "mainContent"> 
-				
-				<div id = "algoControlSection">
-					<!-- Table for buttons to control specific animation (insert/find/etc) -->
-					<!-- (filled in by javascript code specific to the animtion) -->
-					<table id="AlgorithmSpecificControls"> </table> 
-				</div>
-				
-					<!-- Drawing canvas where all animation is done.  Note:  can be resized in code -->
-									
-				<canvas id="canvas" width="1000" height="500"></canvas>
-				
-				<div id = "generalAnimationControlSection">
-					<!-- Table for buttons to control general animation (play/pause/undo/etc) ->
-					<!-- (filled in by javascript code, specifically AnimationMain.js)  -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heap Visualization</title>
 
-					<table id="GeneralAnimationControls">  </table>		
-				</div>
-				
-			</div> <!-- mainContent -->
-			
-			<div id="footer">  
-				<p><center><a href="Algorithms.html">Algorithm Visualizations</a></center></p>
-			</div>
+    <!-- CSS for layout and responsiveness -->
+    <link rel="stylesheet" href="visualizationPageStyle.css">
+    <link rel="stylesheet" href="ThirdParty/jquery-ui-1.8.11.custom.css">
 
-		</div><!-- container -->
-	</body>
+    <!-- jQuery Library -->
+    <script src="ThirdParty/jquery-1.5.2.min.js"></script>
+    <script src="ThirdParty/jquery-ui-1.8.11.custom.min.js"></script>
+
+    <!-- JavaScript for visualization -->
+    <script type="text/javascript" src="AnimationLibrary/CustomEvents.js"></script>
+    <script type="text/javascript" src="AnimationLibrary/UndoFunctions.js"></script>
+    <script type="text/javascript" src="AnimationLibrary/AnimatedObject.js"></script>
+    <script type="text/javascript" src="AnimationLibrary/AnimatedLabel.js"></script>
+    <script type="text/javascript" src="AnimationLibrary/AnimatedCircle.js"></script>
+    <script type="text/javascript" src="AnimationLibrary/AnimatedRectangle.js"></script>
+    <script type="text/javascript" src="AnimationLibrary/AnimatedLinkedList.js"></script>
+    <script type="text/javascript" src="AnimationLibrary/HighlightCircle.js"></script>
+    <script type="text/javascript" src="AnimationLibrary/Line.js"></script>
+    <script type="text/javascript" src="AnimationLibrary/ObjectManager.js"></script>
+    <script type="text/javascript" src="AnimationLibrary/AnimationMain.js"></script>
+    <script type="text/javascript" src="AlgorithmLibrary/Algorithm.js"></script>
+    <script type="text/javascript" src="AlgorithmLibrary/Heap.js"></script>
+
+    <script>
+        // Function to resize canvas dynamically
+        function resizeCanvas() {
+            const canvas = document.getElementById('canvas');
+            canvas.width = window.innerWidth * 0.9; // 90% of viewport width
+            canvas.height = window.innerHeight * 0.6; // 60% of viewport height
+        }
+
+        window.onload = function () {
+            init(); // Ensure initialization function runs
+            resizeCanvas();
+        };
+
+        window.onresize = function () {
+            resizeCanvas();
+        };
+    </script>
+
+</head>
+
+<body class="VisualizationMainPage">
+    <div id="container">
+        <div id="header">
+            <center><h1>Min Heap Visualization</h1></center>
+        </div>
+
+        <div id="mainContent">
+            <div id="algoControlSection">
+                <table id="AlgorithmSpecificControls"></table> <!-- Controls populated by JavaScript -->
+            </div>
+
+            <!-- Responsive Drawing Canvas -->
+            <canvas id="canvas"></canvas>
+
+            <div id="generalAnimationControlSection">
+                <table id="GeneralAnimationControls"></table> <!-- Controls populated by JavaScript -->
+            </div>
+        </div>
+
+        <div id="footer">
+            <p><center><a href="Algorithms.html">Algorithm Visualizations</a></center></p>
+        </div>
+    </div>
+</body>
 </html>
