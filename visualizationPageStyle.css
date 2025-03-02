@@ -1,85 +1,143 @@
 @charset "utf-8";
 
+/* Global Styles */
 body {
     font: 100% Verdana, Arial, Helvetica, sans-serif;
     margin: 0;
     padding: 0;
     text-align: center;
-    color: #2c3e50; /* Dark grey-blue for text */
+    color: #2c3e50; /* Dark grey-blue */
     background-color: #f4f4f9; /* Light muted grey */
 }
 
+/* Main Content */
 .VisualizationMainPage #mainContent {
-    background: #ffffff; /* White background for content */
-    padding: 0 20px;
+    background: #ffffff; /* White background */
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
 }
 
+/* Container */
 .VisualizationMainPage #container {
-    background: #ffffff; /* White background */
+    background: #ffffff; /* White */
     margin: 0 auto;
     text-align: left;
+    padding-bottom: 20px;
 }
 
+/* Algorithm Control Section */
 .VisualizationMainPage #algoControlSection {
-    background: #f8c471; /* Muted light amber */
-    color: #2c3e50; /* Dark grey-blue for text */
-}
-
-.VisualizationMainPage #generalAnimationControlSection {
-    background: #f8c471; /* Muted light amber */
+    background: #f8c471; /* Muted amber */
     color: #2c3e50; /* Dark grey-blue */
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
 }
 
+/* General Animation Control Section */
+.VisualizationMainPage #generalAnimationControlSection {
+    background: #f8c471; /* Muted amber */
+    color: #2c3e50;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Header */
 .VisualizationMainPage #header {
-    background: #34495e; /* Premium muted navy */
-    color: #ecf0f1; /* Light grey for text */
-    padding: 0 10px 0 20px;
+    background: #34495e; /* Premium navy */
+    color: #ecf0f1; /* Light grey */
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
 }
 
-.VisualizationMainPage #header a:visited {
-    text-decoration: none;
-    color: #ecf0f1; /* Light grey for visited links */
-}
-
-.VisualizationMainPage #header h1 {
-    margin: 0;
-    padding: 10px 0;
-}
-
+/* Header Links */
+.VisualizationMainPage #header a:visited,
 .VisualizationMainPage #header a:link {
     text-decoration: none;
-    color: #ecf0f1; /* Light grey for links */
+    color: #ecf0f1;
 }
 
-.VisualizationMainPage #footer a:visited {
-    text-decoration: none;
-    color: #ecf0f1; /* Light grey for visited links */
+/* Footer */
+.VisualizationMainPage #footer {
+    padding: 15px;
+    background: #34495e; /* Premium muted navy */
+    color: #ecf0f1; /* Light grey */
+    text-align: center;
+    font-size: 14px;
 }
 
+/* Footer Links */
+.VisualizationMainPage #footer a:visited,
 .VisualizationMainPage #footer a:link {
     text-decoration: none;
-    color: #ecf0f1; /* Light grey for links */
+    color: #ecf0f1;
+    font-weight: bold;
 }
 
+.VisualizationMainPage #footer a:hover {
+    color: #f8c471; /* Amber hover */
+}
+
+/* Content Headings */
 .VisualizationMainPage #mainContent h1,
 .VisualizationMainPage #mainContent h2,
 .VisualizationMainPage #mainContent h3 {
-    padding: 0 20px;
-    background: #ffffff; /* White background for content */
-    color: #34495e; /* Dark navy for headings */
+    padding: 10px;
+    background: #ffffff;
+    color: #34495e; /* Dark navy */
 }
 
-.VisualizationMainPage #footer {
-    padding: 0 10px;
-    background: #34495e; /* Premium muted navy */
-    color: #ecf0f1; /* Light grey for text */
+/* Button Styling */
+button {
+    background-color: #3498db; /* Blue */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
 }
 
-.VisualizationMainPage #footer p {
-    margin: 0;
-    padding: 10px 0;
+button:hover {
+    background-color: #2980b9; /* Darker Blue */
 }
 
-em {
-    font-weight: bold;
+/* Canvas (Visualization Area) */
+canvas {
+    width: 90vw;
+    height: auto;
+    max-width: 1000px;
+    border: 2px solid #3498db;
+    border-radius: 5px;
+    background-color: white;
+    margin-top: 15px;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    .VisualizationMainPage #header {
+        font-size: 20px;
+        padding: 15px;
+    }
+
+    .VisualizationMainPage #mainContent {
+        padding: 10px;
+    }
+
+    canvas {
+        width: 95%;
+        max-width: 600px;
+    }
+
+    button {
+        width: 100%;
+        font-size: 14px;
+        padding: 10px;
+    }
 }
